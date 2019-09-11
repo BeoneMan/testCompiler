@@ -14,7 +14,7 @@ public class SimpleLexer {
         SimpleLexer lexer = new SimpleLexer();
 
         // String script = "int age = 45;";
-        String script = "int age = 45 ";
+        String script = "int age = 45 ; ";
         System.out.println("parse :" + script);
         SimpleTokenReader tokenReader = lexer.tokenize(script);
         dump(tokenReader);
@@ -123,13 +123,15 @@ public class SimpleLexer {
                     state = initToken(ch);
                     break;
                 case IntLiteral:
-                    if(isDigit(ch)){
+                    if (isDigit(ch)) {
                         tokenText.append(ch);
-                    }else {
-                        state=initToken(ch);
+                    } else {
+                        state = initToken(ch);
                     }
                     break;
-
+                case SemiColon:
+                    state = initToken(ch);
+                    break;
             }
 
         }
@@ -157,9 +159,13 @@ public class SimpleLexer {
             state = DfaState.Assignment;
             token.type = TokenType.Assignment;
             tokenText.append(ch);
-        }else if(isDigit(ch)){
+        } else if (isDigit(ch)) {
             state = DfaState.IntLiteral;
-            token.type=TokenType.IntLiteral;
+            token.type = TokenType.IntLiteral;
+            tokenText.append(ch);
+        } else if (';' == ch) {
+            state = DfaState.SemiColon;
+            token.type = TokenType.SemiColon;
             tokenText.append(ch);
         }
 
